@@ -28,7 +28,7 @@ public class EntityManager extends Observable {
     private final DatabaseSettings mDatabase;
     private EntityRestClient restClient;
     private List<Note> NoteFromDatabase;
-    private String alimentsLastUpdate;
+    private long lastUpdate = 0;
     private ConcurrentMap<String, Note> entities = new ConcurrentHashMap<>();
 
     public EntityManager(Context context) {
@@ -43,9 +43,9 @@ public class EntityManager extends Observable {
         this.restClient = client;
     }
 
-    public Cancellable saveAsync(Note Note, boolean update, final OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+    public Cancellable saveAsync(Note Note, final OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
         Log.d(TAG, "save Note async");
-        return restClient.saveAsync(Note, update, new OnSuccessListener<Note>() {
+        return restClient.saveAsync(Note, new OnSuccessListener<Note>() {
 
                     @Override
                     public void onSuccess(Note Note) {
@@ -68,7 +68,7 @@ public class EntityManager extends Observable {
 
     public Cancellable getEntitiesAsync(final OnSuccessListener<List<Note>> onSuccessListener, OnErrorListener onErrorListener) {
         Log.d(TAG, "get aliments Async...");
-        return restClient.searchAsync(alimentsLastUpdate, new OnSuccessListener<List<Note>>() {
+        return restClient.searchAsync(String.valueOf(lastUpdate), new OnSuccessListener<List<Note>>() {
             @Override
             public void onSuccess(List<Note> result) {
                 Log.d(TAG, "get aliments async succeeded");
@@ -92,6 +92,9 @@ public class EntityManager extends Observable {
         for (Note a : ent) {
             entities.put(a.getName(), a);
             mDatabase.save(a);
+            if (a.getUpdated() >lastUpdate) {
+                lastUpdate = a.getUpdated();
+            }
         }
         setChanged();
     }
@@ -133,6 +136,9 @@ public class EntityManager extends Observable {
                             if (!ent.equals(entities.get(ent.getName()))) {
                                 setChanged();
                                 entities.put(name, ent);
+                                if (ent.getUpdated()>lastUpdate){
+                                    lastUpdate = ent.getUpdated();
+                                }
                                 mDatabase.save(ent);
                                 Log.d(TAG, name + " fetched");
                             }
@@ -152,6 +158,12 @@ public class EntityManager extends Observable {
 
     public Note getNoteFromDatabase(String name) {
         return mDatabase.getOneByName(name);
+    }
+
+    public void saveToDb(List<Note> alim) {
+        for (Note a: alim){
+            mDatabase.save(a);
+        }
     }
 
     private class NoteComparator implements java.util.Comparator<Note> {

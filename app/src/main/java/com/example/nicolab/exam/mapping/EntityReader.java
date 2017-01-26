@@ -9,13 +9,14 @@ import java.io.IOException;
 
 import static com.example.nicolab.exam.mapping.Api.Note.ID;
 import static com.example.nicolab.exam.mapping.Api.Note.NAME;
+import static com.example.nicolab.exam.mapping.Api.Note.TEXT;
 import static com.example.nicolab.exam.mapping.Api.Note.VALUE1;
 import static com.example.nicolab.exam.mapping.Api.Note.VALUE2;
 
 /**
  * Created by bianca on 01.12.2016.
  */
-public class EntityReader implements ResourceReader<Note, JsonReader>{
+public class EntityReader implements ResourceReader<Note, JsonReader> {
     private static final String TAG = EntityReader.class.getSimpleName();
 
     @Override
@@ -26,6 +27,9 @@ public class EntityReader implements ResourceReader<Note, JsonReader>{
             String name = reader.nextName();
             if (name.equals(NAME)) {
                 aliment.setName(reader.nextString());
+            } else if (name.equals(TEXT)) {
+                aliment.setName(reader.nextString());
+
             } else if (name.equals(VALUE1)) {
                 aliment.setUpdated(reader.nextLong());
             } else if (name.equals(VALUE2)) {
@@ -37,6 +41,7 @@ public class EntityReader implements ResourceReader<Note, JsonReader>{
                 Log.w(TAG, String.format("Note property '%s' ignored", name));
             }
         }
+
         reader.endObject();
         return aliment;
     }

@@ -163,7 +163,7 @@ public class EditEntityActivity extends AppCompatActivity {
             // perform the user login attempt.
             mProgressView.setVisibility(VISIBLE);
             Note Note = new Note(name.getText().toString(), Long.valueOf(value1.getText().toString()), Integer.valueOf(value2.getText().toString()));
-            myApp.getNoteManager().saveAsync(Note, update,
+            myApp.getNoteManager().saveAsync(Note,
                     new OnSuccessListener<Note>() {
                         @Override
                         public void onSuccess(final Note Note1) {

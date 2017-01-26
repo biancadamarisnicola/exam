@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
+
         <!--<android.support.v7.widget.Toolbar-->
         <!--android:id="@+id/toolbar"-->
         <!--android:layout_width="match_parent"-->
@@ -30,12 +31,12 @@
         android:layout_gravity="bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ProgressBar
-            android:id="@+id/content_loading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:visibility="gone"/>
+        <!--<ProgressBar-->
+            <!--android:id="@+id/content_loading"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:visibility="gone"/>-->
 
 
         <!--<ImageView-->
@@ -54,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="gone"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <FrameLayout
@@ -65,5 +67,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <include layout="@layout/activity_info" />
     </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/content_loading"
+        android:text="Loading....."
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </android.support.design.widget.CoordinatorLayout>

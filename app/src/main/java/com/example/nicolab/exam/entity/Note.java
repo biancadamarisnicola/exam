@@ -75,9 +75,10 @@ public class Note {
     public String toJsonString() {
         JSONObject jsonObject= new JSONObject();
         try {
-            jsonObject.put("name", name);
+            jsonObject.put("text", name);
             jsonObject.put("updated", updated);
             jsonObject.put("version", version);
+            jsonObject.put("id", id);
 
             return jsonObject.toString();
         } catch (JSONException e) {

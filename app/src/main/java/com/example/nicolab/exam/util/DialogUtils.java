@@ -10,7 +10,7 @@ public class DialogUtils {
     public static void showError(Context context, Exception e) {
         new AlertDialog.Builder(context)
                 .setTitle("Error")
-                .setMessage(e.getMessage())
+                .setMessage("Loading failed error "+e.getMessage())
                 .setCancelable(true)
                 .create()
                 .show();

@@ -36,10 +36,38 @@
 
     </android.support.design.widget.AppBarLayout>
 
+        <LinearLayout
+            android:id="@+id/edit_aliment_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Note_name" />
+
+            <EditText
+                android:id="@+id/Note_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/save_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center|center"
+                android:text="@string/action_save"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/Note_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
     </android.support.v4.widget.NestedScrollView>
 
@@ -51,6 +79,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@+id/Note_detail_container"
         app:layout_anchorGravity="top|end"
+        android:visibility="gone"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
     <android.support.design.widget.FloatingActionButton
@@ -59,6 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_marginEnd="80dp"
+        android:visibility="gone"
         app:layout_anchor="@+id/Note_detail_container"
         app:layout_anchorGravity="top|end"
         app:srcCompat="@android:drawable/ic_delete" />

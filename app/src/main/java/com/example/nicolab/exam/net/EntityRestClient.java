@@ -50,18 +50,12 @@ public class EntityRestClient {
         okHttpClient = new OkHttpClient();
     }
 
-    public Cancellable saveAsync(Note Note, boolean update, OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", NoteUrl, Note.getName()));
+    public Cancellable saveAsync(Note Note,  OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", NoteUrl, Note.getId()));
         Log.d(TAG, Note.toJsonString());
         RequestBody body = RequestBody.create(JSON, Note.toJsonString());
-        if (update) {
             builder.method("PUT", body);
             Log.d(TAG, "PUT methd");
-        }else{
-            builder = new Request.Builder().url(String.format("%s", NoteUrl ));
-            builder.method("POST", body);
-            Log.d(TAG, "POST methd");
-        }
         return new CancellableOkHttpAsync<Note>(
                 builder.build(),
                 new ResponseReader<Note>() {
@@ -82,10 +76,7 @@ public class EntityRestClient {
     }
 
     public Cancellable searchAsync(String alimentsLastUpdate, OnSuccessListener<List<Note>> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder requestBuilder = new Request.Builder().url(NoteUrl);
-        if (alimentsLastUpdate != null) {
-            requestBuilder.header(LAST_MODIFIED, alimentsLastUpdate);
-        }
+        Request.Builder requestBuilder = new Request.Builder().url(String.format("%s?lastUpdated=%s", NoteUrl, alimentsLastUpdate));
         return new CancellableOkHttpAsync<List<Note>>(
                 requestBuilder.build(),
                 new ResponseReader<List<Note>>() {

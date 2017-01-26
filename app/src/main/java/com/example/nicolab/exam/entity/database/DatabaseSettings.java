@@ -82,7 +82,7 @@ public class DatabaseSettings extends SQLiteOpenHelper {
         int size = c.getCount();
         c.moveToFirst();
         for (int i = 0; i < c.getCount(); i++) {
-            aliments.add(new Note(c.getString(1), Long.valueOf(c.getString(2)), Integer.valueOf(c.getString(3))));
+            aliments.add(new Note(c.getString(1), Long.valueOf(c.getString(3)), Integer.valueOf(c.getString(2))));
             c.moveToNext();
         }
         ;
@@ -106,8 +106,8 @@ public class DatabaseSettings extends SQLiteOpenHelper {
         Cursor c = getReadableDatabase().rawQuery("select * from " + TABLE_NAME +  " WHERE name = ?", new String[] { alimentName });
         c.moveToFirst();
         if (c.moveToFirst()) {
-            Log.d(TAG, c.getString(0) + c.getString(1));
-            return new Note(c.getString(1), Long.valueOf(c.getString(2)), Integer.valueOf(c.getString(3)));
+            Log.d(TAG, c.getString(1) + " " +c.getString(2)+ " "+c.getString(3));
+            return new Note(c.getString(1), Long.valueOf(c.getString(3)), Integer.valueOf(c.getString(2)));
         } else {
             return null;
         }

@@ -26,7 +26,7 @@ import com.example.nicolab.exam.util.OnSuccessListener;
 
 import java.util.List;
 
-public class MasterActivity extends AppCompatActivity implements NetworkManager.NetworkStateReceiverListener{
+public class MasterActivity extends AppCompatActivity implements NetworkManager.NetworkStateReceiverListener {
     private static final String TAG = MasterActivity.class.getSimpleName();
     private NetworkManager networkManager;
     private ConnectivityManager connectivityManager;
@@ -53,7 +53,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
 //        textView.setTextSize(40);
 //        textView.setText(message);
         //setupToolbar();
-        setupFloatingActionBar();
+        //setupFloatingActionBar();
         setupRecyclerView();
     }
 
@@ -90,7 +90,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
                     Context context = view.getContext();
                     Intent intent = new Intent(context, EditEntityActivity.class);
                     context.startActivity(intent);
-                }else{
+                } else {
                 }
             }
         });
@@ -116,7 +116,12 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
             Log.d(TAG, "start startGetAlimentsAsync - content already loaded, return");
             return;
         }
+//        final List<Note> entitites = myApp.getNoteManager().getEntititesFromDatabase();
+//        showContent(entitites);
         showLoadingIndicator();
+        final List<Note> entitites = myApp.getNoteManager().getEntititesFromDatabase();
+        Log.d(TAG, "getAlimentsFromDatabase - success");
+        showContent(entitites);
         if (isNetworkOnline()) {
             Log.d(TAG, "Online network");
             getNoteAsyncCall = myApp.getNoteManager().getEntitiesAsync(
@@ -127,7 +132,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    showContent(alim);
+                                    saveTODB(alim);
                                 }
                             });
                         }
@@ -146,10 +151,16 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
             );
         } else {
             Log.d(TAG, "Offline network");
-            final List<Note> entitites = myApp.getNoteManager().getEntititesFromDatabase();
-            Log.d(TAG, "getAlimentsFromDatabase - success");
-            showContent(entitites);
+//            ent = myApp.getNoteManager().getEntititesFromDatabase();
+//            Log.d(TAG, "getAlimentsFromDatabase - success");
+//            showContent(entitites);
+            //       }
         }
+    }
+
+    private void saveTODB(List<Note> alim) {
+            myApp.getNoteManager().saveToDb(alim);
+
     }
 
     private void showError(Exception e) {
@@ -161,7 +172,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
     }
 
     private void showContent(List<Note> aliments) {
-        Log.d(TAG, "showContent: size "+aliments.size());
+        Log.d(TAG, "showContent: size " + aliments.size());
         adapter = new AlimentRecyclerViewAdapter(aliments);
         recyclerView.setAdapter(adapter);
         contentLoadingView.setVisibility(View.GONE);
@@ -212,9 +223,9 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
     public boolean isNetworkOnline() {
         Log.d(TAG, "Check if network is online");
         TextView textView = (TextView) findViewById(R.id.activity_info_text);
-        if (connectivityManager.getActiveNetworkInfo() != null){
+        if (connectivityManager.getActiveNetworkInfo() != null) {
             textView.setText("You are online");
-        }else{
+        } else {
             textView.setText("You are offline");
         }
         return connectivityManager.getActiveNetworkInfo() != null;
@@ -249,10 +260,12 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
             holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtra(DetailFragment.Note_NAME, holder.item.getName());
-                        context.startActivity(intent);
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(DetailFragment.Note_NAME, holder.item.getName());
+                    intent.putExtra(DetailFragment.NOTE_ID, holder.item.getId());
+                    intent.putExtra(DetailFragment.NOTE_VERSION, String.valueOf(holder.item.getVersion()));
+                    context.startActivity(intent);
                 }
             });
         }

@@ -28,6 +28,8 @@ import com.example.nicolab.exam.util.OnSuccessListener;
 public class DetailFragment extends Fragment {
     private static final String TAG = DetailFragment.class.getSimpleName();
     public static final String Note_NAME = "Note_name" ;
+    public static final String NOTE_ID = "id";
+    public static final String NOTE_VERSION = "version";
     private Bundle arguments;
     private Note Note;
 
@@ -127,43 +129,43 @@ public class DetailFragment extends Fragment {
     }
 
     private void fetchAlimentAsync() {
-        if (isNetworkConnected()) {
-            Log.d(TAG, "fetch Note async");
-            Log.d(TAG, "Online mode");
-            NoteAsync = myApp.getNoteManager().getNoteAsync(
-                    getArguments().getString(Note_NAME),
-                    new OnSuccessListener<Note>() {
-
-                        @Override
-                        public void onSuccess(final Note al) {
-                            Log.d(TAG, "CHECK");
-                            Log.d(TAG, al.toString());
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Note = al;
-                                    fillAlimentDetails();
-                                }
-                            });
-                        }
-                    }, new OnErrorListener() {
-
-                        @Override
-                        public void onError(final Exception e) {
-                            Log.d(TAG, e.toString());
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DialogUtils.showError(getActivity(), e);
-                                }
-                            });
-                        }
-                    });
-        } else {
-            Log.d(TAG, "Offline mode - fetch from DB");
+//        if (isNetworkConnected()) {
+//            Log.d(TAG, "fetch Note async");
+//            Log.d(TAG, "Online mode");
+//            NoteAsync = myApp.getNoteManager().getNoteAsync(
+//                    getArguments().getString(Note_NAME),
+//                    new OnSuccessListener<Note>() {
+//
+//                        @Override
+//                        public void onSuccess(final Note al) {
+//                            Log.d(TAG, "CHECK");
+//                            Log.d(TAG, al.toString());
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Note = al;
+//                                    fillAlimentDetails();
+//                                }
+//                            });
+//                        }
+//                    }, new OnErrorListener() {
+//
+//                        @Override
+//                        public void onError(final Exception e) {
+//                            Log.d(TAG, e.toString());
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    DialogUtils.showError(getActivity(), e);
+//                                }
+//                            });
+//                        }
+//                    });
+//        } else {
+//            Log.d(TAG, "Offline mode - fetch from DB");
             Note = myApp.getNoteManager().getNoteFromDatabase(getArguments().getString(Note_NAME));
             fillAlimentDetails();
-        }
+ //       }
     }
 
     protected boolean isNetworkConnected() {
