@@ -4,12 +4,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/entity_fragment"
+    android:id="@+id/Note_fragment"
     style="?android:attr/textAppearanceLarge"
     tools:context="com.example.nicolab.exam.DetailFragment">
 
     <TextView
-        android:id="@+id/text_entity"
+        android:id="@+id/text_Note"
         android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_margin="@dimen/text_margin"

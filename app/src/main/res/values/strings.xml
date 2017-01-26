@@ -2,14 +2,14 @@
     <string name="app_name">Exam</string>
     <string name="edit_event">Edit event</string>
     <string name="aliment_name">Name</string>
-    <string name="entity_name">Name</string>
-    <string name="entity_value1">value1</string>
-    <string name="entity_value2">Value 2</string>
-    <string name="entity_value3">Value 3</string>
-    <string name="entity_value4">Value 4</string>
+    <string name="Note_name">Name</string>
+    <string name="Note_value1">value1</string>
+    <string name="Note_value2">Value 2</string>
+    <string name="Note_value3">Value 3</string>
+    <string name="Note_value4">Value 4</string>
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
     <string name="error_field_required">This field is required</string>
     <string name="detail_activity">Detail</string>
-    <string name="api_url">http://192.168.0.104:3000</string>
+    <string name="api_url">http://172.30.116.160:3000</string>
 </resources>

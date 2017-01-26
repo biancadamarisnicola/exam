@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.nicolab.exam.entity.Entity;
+import com.example.nicolab.exam.entity.Note;
 import com.example.nicolab.exam.util.DialogUtils;
 import com.example.nicolab.exam.util.OnErrorListener;
 import com.example.nicolab.exam.util.OnSuccessListener;
@@ -49,15 +49,15 @@ public class EditEntityActivity extends AppCompatActivity {
         myApp = (App) getApplication();
         setContentView(R.layout.activity_edit_event);
         update = false;
-        name = (EditText) findViewById(R.id.entity_name);
-        value1 = (EditText) findViewById(R.id.entity_value1);
-        value2 = (EditText) findViewById(R.id.entity_value2);
-        value3 = (EditText) findViewById(R.id.entity_value3);
-        value4 = (EditText) findViewById(R.id.entity_value4);
-        String aliment = getIntent().getStringExtra("Entity");
+        name = (EditText) findViewById(R.id.Note_name);
+        value1 = (EditText) findViewById(R.id.Note_value1);
+        value2 = (EditText) findViewById(R.id.Note_value2);
+        value3 = (EditText) findViewById(R.id.Note_value3);
+        value4 = (EditText) findViewById(R.id.Note_value4);
+        String aliment = getIntent().getStringExtra("Note");
         if (aliment != null) {
             Log.d(TAG, aliment);
-            parseEntity(aliment);
+            parseNote(aliment);
             update = true;
         }
         Button saveButton = (Button) findViewById(R.id.save_button);
@@ -77,7 +77,7 @@ public class EditEntityActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "cancel edit entity");
+                Log.d(TAG, "cancel edit Note");
                 startActivity(new Intent(view.getContext(), MasterActivity.class));
             }
         });
@@ -88,7 +88,7 @@ public class EditEntityActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private void parseEntity(String aliment) {
+    private void parseNote(String aliment) {
         String[] elems = aliment.split(",");
         String n = elems[0].split("=")[1];
         name.setText(n.substring(1, name.length() - 1));
@@ -162,17 +162,17 @@ public class EditEntityActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             mProgressView.setVisibility(VISIBLE);
-            Entity entity = new Entity(name.getText().toString(), value1.getText().toString(), value2.getText().toString(), value3.getText().toString(), value4.getText().toString());
-            myApp.getEntityManager().saveAsync(entity, update,
-                    new OnSuccessListener<Entity>() {
+            Note Note = new Note(name.getText().toString(), Long.valueOf(value1.getText().toString()), Integer.valueOf(value2.getText().toString()));
+            myApp.getNoteManager().saveAsync(Note, update,
+                    new OnSuccessListener<Note>() {
                         @Override
-                        public void onSuccess(final Entity entity1) {
+                        public void onSuccess(final Note Note1) {
                             Log.d(TAG, "saveElement - success");
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (entity1 != null)
-                                        Log.d(TAG, entity1.toString());
+                                    if (Note1 != null)
+                                        Log.d(TAG, Note1.toString());
                                     mProgressView.setVisibility(View.INVISIBLE);
                                     startActivity(new Intent(view.getContext(), MasterActivity.class));
                                 }

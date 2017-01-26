@@ -9,21 +9,21 @@ import com.example.nicolab.exam.service.EntityManager;
 public class App extends Application {
     public static final String TAG = App.class.getSimpleName();
     protected static final String EXTRA_MESSAGE = "com.example.caloriecounter.MESSAGE";
-    private EntityManager entityManager;
-    private EntityRestClient entityRestClient;
+    private EntityManager NoteManager;
+    private EntityRestClient NoteRestClient;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate");
         super.onCreate();
-        entityManager = new EntityManager(this);
-        entityRestClient = new EntityRestClient(this);
-        entityManager.setEntityClient(entityRestClient);
+        NoteManager = new EntityManager(this);
+        NoteRestClient = new EntityRestClient(this);
+        NoteManager.setNoteClient(NoteRestClient);
     }
 
 
-    public EntityManager getEntityManager() {
-        return entityManager;
+    public EntityManager getNoteManager() {
+        return NoteManager;
     }
 
     @Override

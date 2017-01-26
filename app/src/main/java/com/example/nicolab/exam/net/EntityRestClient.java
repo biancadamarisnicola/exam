@@ -5,7 +5,7 @@ import android.util.JsonReader;
 import android.util.Log;
 
 import com.example.nicolab.exam.R;
-import com.example.nicolab.exam.entity.Entity;
+import com.example.nicolab.exam.entity.Note;
 import com.example.nicolab.exam.mapping.EntityReader;
 import com.example.nicolab.exam.mapping.ResourceListReader;
 import com.example.nicolab.exam.util.Cancellable;
@@ -39,34 +39,34 @@ public class EntityRestClient {
     private static final String LAST_MODIFIED = "Last-Modified";
     private final Context context;
     private final String apiUrl;
-    private final String entityUrl;
+    private final String NoteUrl;
     private final OkHttpClient okHttpClient;
 
     public EntityRestClient(Context app) {
         Log.d(TAG, "constructor");
         this.context = app;
         apiUrl = context.getString(R.string.api_url);
-        entityUrl = apiUrl.concat("/entity");
+        NoteUrl = apiUrl.concat("/note");
         okHttpClient = new OkHttpClient();
     }
 
-    public Cancellable saveAsync(Entity entity, boolean update, OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", entityUrl, entity.getName()));
-        Log.d(TAG, entity.toJsonString());
-        RequestBody body = RequestBody.create(JSON, entity.toJsonString());
+    public Cancellable saveAsync(Note Note, boolean update, OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", NoteUrl, Note.getName()));
+        Log.d(TAG, Note.toJsonString());
+        RequestBody body = RequestBody.create(JSON, Note.toJsonString());
         if (update) {
             builder.method("PUT", body);
             Log.d(TAG, "PUT methd");
         }else{
-            builder = new Request.Builder().url(String.format("%s", entityUrl ));
+            builder = new Request.Builder().url(String.format("%s", NoteUrl ));
             builder.method("POST", body);
             Log.d(TAG, "POST methd");
         }
-        return new CancellableOkHttpAsync<Entity>(
+        return new CancellableOkHttpAsync<Note>(
                 builder.build(),
-                new ResponseReader<Entity>() {
+                new ResponseReader<Note>() {
                     @Override
-                    public Entity read(Response response) throws Exception {
+                    public Note read(Response response) throws Exception {
                         Log.d(TAG, String.valueOf(response.code()));
                         if (response.code() == 200) {
                             JsonReader reader = new JsonReader(new InputStreamReader(response.body().byteStream(), UTF_8));
@@ -81,19 +81,19 @@ public class EntityRestClient {
         );
     }
 
-    public Cancellable searchAsync(String alimentsLastUpdate, OnSuccessListener<List<Entity>> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder requestBuilder = new Request.Builder().url(entityUrl);
+    public Cancellable searchAsync(String alimentsLastUpdate, OnSuccessListener<List<Note>> onSuccessListener, OnErrorListener onErrorListener) {
+        Request.Builder requestBuilder = new Request.Builder().url(NoteUrl);
         if (alimentsLastUpdate != null) {
             requestBuilder.header(LAST_MODIFIED, alimentsLastUpdate);
         }
-        return new CancellableOkHttpAsync<List<Entity>>(
+        return new CancellableOkHttpAsync<List<Note>>(
                 requestBuilder.build(),
-                new ResponseReader<List<Entity>>() {
+                new ResponseReader<List<Note>>() {
                     @Override
-                    public List<Entity> read(Response response) throws Exception {
+                    public List<Note> read(Response response) throws Exception {
                         JsonReader reader = new JsonReader(new InputStreamReader(response.body().byteStream(), UTF_8));
-                        List<Entity> result =
-                                new ResourceListReader<Entity>(new EntityReader()).read(reader);
+                        List<Note> result =
+                                new ResourceListReader<Note>(new EntityReader()).read(reader);
                         Log.d(TAG, String.valueOf(result.size()));
                         return result;
 
@@ -104,8 +104,8 @@ public class EntityRestClient {
         );
     }
 
-    public Cancellable deleteAsync(String name, OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", entityUrl, name));
+    public Cancellable deleteAsync(String name, OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", NoteUrl, name));
         JSONObject jsonObject= new JSONObject();
         try {
             jsonObject.put("name", name);
@@ -115,11 +115,11 @@ public class EntityRestClient {
         }
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         builder.method("DELETE", body);
-        return new CancellableOkHttpAsync<Entity>(
+        return new CancellableOkHttpAsync<Note>(
                 builder.build(),
-                new ResponseReader<Entity>() {
+                new ResponseReader<Note>() {
                     @Override
-                    public Entity read(Response response) throws Exception {
+                    public Note read(Response response) throws Exception {
                         if (response.code() == 200) {
                             JsonReader reader = new JsonReader(new InputStreamReader(response.body().byteStream(), UTF_8));
                             return new EntityReader().read(reader);
@@ -133,13 +133,13 @@ public class EntityRestClient {
         );
     }
 
-    public Cancellable readAsync(String name, OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", entityUrl, name));
-        return new CancellableOkHttpAsync<Entity>(
+    public Cancellable readAsync(String name, OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Request.Builder builder = new Request.Builder().url(String.format("%s/%s", NoteUrl, name));
+        return new CancellableOkHttpAsync<Note>(
                 builder.build(),
-                new ResponseReader<Entity>() {
+                new ResponseReader<Note>() {
                     @Override
-                    public Entity read(Response response) throws Exception {
+                    public Note read(Response response) throws Exception {
                         if (response.code() == 200) {
                             JsonReader reader = new JsonReader(new InputStreamReader(response.body().byteStream(), UTF_8));
                             return new EntityReader().read(reader);

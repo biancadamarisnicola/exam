@@ -31,14 +31,14 @@ public class DetailActivity extends AppCompatActivity {
         }
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
-            arguments.putString(DetailFragment.ENTITY_NAME,
-                    getIntent().getStringExtra(DetailFragment.ENTITY_NAME));
+            arguments.putString(DetailFragment.Note_NAME,
+                    getIntent().getStringExtra(DetailFragment.Note_NAME));
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
             Log.d(TAG,"__________________________________");
             Log.d(TAG, fragment.getArguments().toString());
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.entity_detail_container, fragment)
+                    .add(R.id.Note_detail_container, fragment)
                     .commit();
         }
     }

@@ -20,13 +20,13 @@ public class ResourceListReader<E> implements ResourceReader<List<E>, JsonReader
 
     @Override
     public List<E> read(JsonReader reader) throws Exception {
-        List<E> entityList = new ArrayList<E>();
+        List<E> NoteList = new ArrayList<E>();
         reader.beginArray();
         while (reader.hasNext()) {
-            entityList.add(resourceReader.read(reader));
+            NoteList.add(resourceReader.read(reader));
         }
         reader.endArray();
-        Log.d(TAG, entityList.toString());
-        return entityList;
+        Log.d(TAG, NoteList.toString());
+        return NoteList;
     }
 }

@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.nicolab.exam.entity.Entity;
+import com.example.nicolab.exam.entity.Note;
 import com.example.nicolab.exam.service.NetworkManager;
 import com.example.nicolab.exam.util.Cancellable;
 import com.example.nicolab.exam.util.DialogUtils;
@@ -34,8 +34,8 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
     private RecyclerView recyclerView;
     private App myApp;
     boolean activityRunning;
-    private boolean entityLoaded;
-    private Cancellable getEntityAsyncCall;
+    private boolean NoteLoaded;
+    private Cancellable getNoteAsyncCall;
     private AlimentRecyclerViewAdapter adapter;
 
     @Override
@@ -107,22 +107,22 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
         Log.d(TAG, "onSTart");
         super.onStart();
         startGetAlimentsAsync();
-        myApp.getEntityManager().subscribeChangeListener();
+        myApp.getNoteManager().subscribeChangeListener();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void startGetAlimentsAsync() {
-        if (entityLoaded) {
+        if (NoteLoaded) {
             Log.d(TAG, "start startGetAlimentsAsync - content already loaded, return");
             return;
         }
         showLoadingIndicator();
         if (isNetworkOnline()) {
             Log.d(TAG, "Online network");
-            getEntityAsyncCall = myApp.getEntityManager().getEntitiesAsync(
-                    new OnSuccessListener<List<Entity>>() {
+            getNoteAsyncCall = myApp.getNoteManager().getEntitiesAsync(
+                    new OnSuccessListener<List<Note>>() {
                         @Override
-                        public void onSuccess(final List<Entity> alim) {
+                        public void onSuccess(final List<Note> alim) {
                             Log.d(TAG, "getAlimentsAsyncCall - success");
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -146,7 +146,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
             );
         } else {
             Log.d(TAG, "Offline network");
-            final List<Entity> entitites = myApp.getEntityManager().getEntititesFromDatabase();
+            final List<Note> entitites = myApp.getNoteManager().getEntititesFromDatabase();
             Log.d(TAG, "getAlimentsFromDatabase - success");
             showContent(entitites);
         }
@@ -160,7 +160,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
         DialogUtils.showError(this, e);
     }
 
-    private void showContent(List<Entity> aliments) {
+    private void showContent(List<Note> aliments) {
         Log.d(TAG, "showContent: size "+aliments.size());
         adapter = new AlimentRecyclerViewAdapter(aliments);
         recyclerView.setAdapter(adapter);
@@ -180,13 +180,13 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
         Log.d(TAG, "onStop");
         super.onStop();
         ensureGetAlimentsAsyncCallCancelled();
-        myApp.getEntityManager().unsubscribeChangeListener();
+        myApp.getNoteManager().unsubscribeChangeListener();
     }
 
     private void ensureGetAlimentsAsyncCallCancelled() {
-        if (getEntityAsyncCall != null) {
+        if (getNoteAsyncCall != null) {
             Log.d(TAG, "ensureGetAlimentsAsyncCallCancelled - cancelling the task");
-            getEntityAsyncCall.cancel();
+            getNoteAsyncCall.cancel();
         }
     }
 
@@ -224,9 +224,9 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
     //TODO:************************************************************************************************************************
     private class AlimentRecyclerViewAdapter extends RecyclerView.Adapter<AlimentRecyclerViewAdapter.ViewHolder> {
 
-        private final List<Entity> entities;
+        private final List<Note> entities;
 
-        public AlimentRecyclerViewAdapter(List<Entity> alims) {
+        public AlimentRecyclerViewAdapter(List<Note> alims) {
             entities = alims;
         }
 
@@ -251,7 +251,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
                 public void onClick(View v) {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtra(DetailFragment.ENTITY_NAME, holder.item.getName());
+                        intent.putExtra(DetailFragment.Note_NAME, holder.item.getName());
                         context.startActivity(intent);
                 }
             });
@@ -271,7 +271,7 @@ public class MasterActivity extends AppCompatActivity implements NetworkManager.
             public final View view;
             public final TextView nameView;
             public final TextView contentView;
-            public Entity item;
+            public Note item;
 
             public ViewHolder(View view) {
                 super(view);

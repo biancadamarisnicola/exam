@@ -9,6 +9,6 @@
 
     app:layoutManager="LinearLayoutManager"
     tools:context="com.example.nicolab.exam.MasterActivity"
-    tools:listitem="@layout/entity_list_content">
+    tools:listitem="@layout/Note_list_content">
 
 </android.support.v7.widget.RecyclerView>

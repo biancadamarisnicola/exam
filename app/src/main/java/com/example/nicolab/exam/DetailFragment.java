@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.nicolab.exam.entity.Entity;
+import com.example.nicolab.exam.entity.Note;
 import com.example.nicolab.exam.util.Cancellable;
 import com.example.nicolab.exam.util.DialogUtils;
 import com.example.nicolab.exam.util.OnErrorListener;
@@ -27,9 +27,9 @@ import com.example.nicolab.exam.util.OnSuccessListener;
  */
 public class DetailFragment extends Fragment {
     private static final String TAG = DetailFragment.class.getSimpleName();
-    public static final String ENTITY_NAME = "entity_name" ;
+    public static final String Note_NAME = "Note_name" ;
     private Bundle arguments;
-    private Entity entity;
+    private Note Note;
 
     private App myApp;
     private LinearLayout alimentView;
@@ -40,7 +40,7 @@ public class DetailFragment extends Fragment {
     private FloatingActionButton deleteFab;
     private ImageView warnind;
     private boolean networkOnline;
-    private Cancellable entityAsync;
+    private Cancellable NoteAsync;
 //    private int id = getResources().getIdentifier("@:drawable/junk_food.jpg", null, null);
 
     public DetailFragment() {
@@ -58,7 +58,7 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        if (getArguments().containsKey(ENTITY_NAME)) {
+        if (getArguments().containsKey(Note_NAME)) {
             // In a real-world scenario, use a Loader
             // to load content from a content provider.
             Activity activity = this.getActivity();
@@ -66,23 +66,23 @@ public class DetailFragment extends Fragment {
             editFab = (FloatingActionButton) activity.findViewById(R.id.edit_fab);
             editFab.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Log.d(TAG, "edit entity");
+                    Log.d(TAG, "edit Note");
                     Context context = v.getContext();
                     Intent intent = new Intent(context, EditEntityActivity.class);
-                    intent.putExtra("Aliment", String.valueOf(entity));
+                    intent.putExtra("Aliment", String.valueOf(Note));
                     context.startActivity(intent);
                 }
             });
             deleteFab = (FloatingActionButton) activity.findViewById(R.id.delete_fab);
             deleteFab.setOnClickListener(new View.OnClickListener() {
                 public void onClick(final View v) {
-                    Log.d(TAG, "delete entity");
-                    entityAsync = myApp.getEntityManager().deleteEntityAsync(
-                            entity.getName(),
-                            new OnSuccessListener<Entity>() {
+                    Log.d(TAG, "delete Note");
+                    NoteAsync = myApp.getNoteManager().deleteNoteAsync(
+                            Note.getName(),
+                            new OnSuccessListener<Note>() {
 
                                 @Override
-                                public void onSuccess(final Entity al) {
+                                public void onSuccess(final Note al) {
                                     Log.d(TAG, "redirect to SearchAlimentActivity");
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
@@ -113,8 +113,8 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView");
         View rootView = inflater.inflate(R.layout.detail_fragment, container, false);
-        alimentView = (LinearLayout) rootView.findViewById(R.id.entity_fragment);
-        alimentTextView = (TextView) rootView.findViewById(R.id.text_entity);
+        alimentView = (LinearLayout) rootView.findViewById(R.id.Note_fragment);
+        alimentTextView = (TextView) rootView.findViewById(R.id.text_Note);
         fillAlimentDetails();
         fetchAlimentAsync();
         return rootView;
@@ -128,20 +128,20 @@ public class DetailFragment extends Fragment {
 
     private void fetchAlimentAsync() {
         if (isNetworkConnected()) {
-            Log.d(TAG, "fetch entity async");
+            Log.d(TAG, "fetch Note async");
             Log.d(TAG, "Online mode");
-            entityAsync = myApp.getEntityManager().getEntityAsync(
-                    getArguments().getString(ENTITY_NAME),
-                    new OnSuccessListener<Entity>() {
+            NoteAsync = myApp.getNoteManager().getNoteAsync(
+                    getArguments().getString(Note_NAME),
+                    new OnSuccessListener<Note>() {
 
                         @Override
-                        public void onSuccess(final Entity al) {
+                        public void onSuccess(final Note al) {
                             Log.d(TAG, "CHECK");
                             Log.d(TAG, al.toString());
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    entity = al;
+                                    Note = al;
                                     fillAlimentDetails();
                                 }
                             });
@@ -161,7 +161,7 @@ public class DetailFragment extends Fragment {
                     });
         } else {
             Log.d(TAG, "Offline mode - fetch from DB");
-            entity = myApp.getEntityManager().getEntityFromDatabase(getArguments().getString(ENTITY_NAME));
+            Note = myApp.getNoteManager().getNoteFromDatabase(getArguments().getString(Note_NAME));
             fillAlimentDetails();
         }
     }
@@ -178,9 +178,9 @@ public class DetailFragment extends Fragment {
     }
 
     private void fillAlimentDetails() {
-        if (entity != null) {
-            Log.d(TAG, entity.toString());
-            alimentTextView.setText(entity.toStringFancy());
+        if (Note != null) {
+            Log.d(TAG, Note.toString());
+            alimentTextView.setText(Note.toStringFancy());
         }else{
             Log.d(TAG, "Aliment is null");
         }

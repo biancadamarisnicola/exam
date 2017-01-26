@@ -5,7 +5,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import com.example.nicolab.exam.entity.Entity;
+import com.example.nicolab.exam.entity.Note;
 import com.example.nicolab.exam.entity.database.DatabaseSettings;
 import com.example.nicolab.exam.net.EntityRestClient;
 import com.example.nicolab.exam.util.Cancellable;
@@ -27,30 +27,31 @@ public class EntityManager extends Observable {
     private final Context context;
     private final DatabaseSettings mDatabase;
     private EntityRestClient restClient;
-    private List<Entity> entityFromDatabase;
+    private List<Note> NoteFromDatabase;
     private String alimentsLastUpdate;
-    private ConcurrentMap<String, Entity> entities = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, Note> entities = new ConcurrentHashMap<>();
 
     public EntityManager(Context context) {
         Log.d(TAG, "constructor");
         this.context = context;
         this.mDatabase = new DatabaseSettings(context);
+        this.mDatabase.getWritableDatabase();
     }
 
-    public void setEntityClient(EntityRestClient client) {
-        Log.d(TAG, "setEntityClient");
+    public void setNoteClient(EntityRestClient client) {
+        Log.d(TAG, "setNoteClient");
         this.restClient = client;
     }
 
-    public Cancellable saveAsync(Entity entity, boolean update, final OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Log.d(TAG, "save entity async");
-        return restClient.saveAsync(entity, update, new OnSuccessListener<Entity>() {
+    public Cancellable saveAsync(Note Note, boolean update, final OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Log.d(TAG, "save Note async");
+        return restClient.saveAsync(Note, update, new OnSuccessListener<Note>() {
 
                     @Override
-                    public void onSuccess(Entity entity) {
-                        Log.d(TAG, "save entity async succedded");
-                        onSuccessListener.onSuccess(entity);
-                        mDatabase.save(entity);
+                    public void onSuccess(Note Note) {
+                        Log.d(TAG, "save Note async succedded");
+                        onSuccessListener.onSuccess(Note);
+                        mDatabase.save(Note);
                         notifyObservers();
                     }
                 }
@@ -65,14 +66,14 @@ public class EntityManager extends Observable {
         //TODO:
     }
 
-    public Cancellable getEntitiesAsync(final OnSuccessListener<List<Entity>> onSuccessListener, OnErrorListener onErrorListener) {
+    public Cancellable getEntitiesAsync(final OnSuccessListener<List<Note>> onSuccessListener, OnErrorListener onErrorListener) {
         Log.d(TAG, "get aliments Async...");
-        return restClient.searchAsync(alimentsLastUpdate, new OnSuccessListener<List<Entity>>() {
+        return restClient.searchAsync(alimentsLastUpdate, new OnSuccessListener<List<Note>>() {
             @Override
-            public void onSuccess(List<Entity> result) {
+            public void onSuccess(List<Note> result) {
                 Log.d(TAG, "get aliments async succeeded");
                 Log.d(TAG, String.valueOf(result.size()));
-                List<Entity> ent = result;
+                List<Note> ent = result;
                 if (ent != null) {
                     updateCachedAliments(ent);
                 } else {
@@ -84,30 +85,30 @@ public class EntityManager extends Observable {
         }, onErrorListener);
     }
 
-    private void updateCachedAliments(List<Entity> ent) {
+    private void updateCachedAliments(List<Note> ent) {
         Log.d(TAG, "updateCachedAliments");
         mDatabase.deleteAll();
         entities = new ConcurrentHashMap<>();
-        for (Entity a : ent) {
+        for (Note a : ent) {
             entities.put(a.getName(), a);
             mDatabase.save(a);
         }
         setChanged();
     }
 
-    private List<Entity> cachedNotesByUpdated() {
-        List<Entity> alim = new ArrayList<>(entities.values());
+    private List<Note> cachedNotesByUpdated() {
+        List<Note> alim = new ArrayList<>(entities.values());
         Log.d(TAG, String.valueOf(alim.size()));
-        Collections.sort(alim, new EntityComparator());
+        Collections.sort(alim, new NoteComparator());
         return alim;
     }
 
-    public Cancellable deleteEntityAsync(String name, final OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Log.d(TAG, "delete entity async");
-        return restClient.deleteAsync(name, new OnSuccessListener<Entity>() {
+    public Cancellable deleteNoteAsync(String name, final OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Log.d(TAG, "delete Note async");
+        return restClient.deleteAsync(name, new OnSuccessListener<Note>() {
 
                     @Override
-                    public void onSuccess(Entity aliment) {
+                    public void onSuccess(Note aliment) {
                         Log.d(TAG, "delete aliment async succedded");
                         mDatabase.deletByName(aliment);
                         onSuccessListener.onSuccess(aliment);
@@ -117,12 +118,12 @@ public class EntityManager extends Observable {
                 , onErrorListener);
     }
 
-    public Cancellable getEntityAsync(final String name, final OnSuccessListener<Entity> onSuccessListener, OnErrorListener onErrorListener) {
-        Log.d(TAG, "get entity async");
-        return restClient.readAsync(name, new OnSuccessListener<Entity>() {
+    public Cancellable getNoteAsync(final String name, final OnSuccessListener<Note> onSuccessListener, OnErrorListener onErrorListener) {
+        Log.d(TAG, "get Note async");
+        return restClient.readAsync(name, new OnSuccessListener<Note>() {
 
                     @Override
-                    public void onSuccess(Entity ent) {
+                    public void onSuccess(Note ent) {
                         Log.d(TAG, "read aliment async succedded");
                         if (ent == null) {
                             setChanged();
@@ -145,17 +146,17 @@ public class EntityManager extends Observable {
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public List<Entity> getEntititesFromDatabase() {
+    public List<Note> getEntititesFromDatabase() {
         return mDatabase.getAll();
     }
 
-    public Entity getEntityFromDatabase(String name) {
+    public Note getNoteFromDatabase(String name) {
         return mDatabase.getOneByName(name);
     }
 
-    private class EntityComparator implements java.util.Comparator<Entity> {
+    private class NoteComparator implements java.util.Comparator<Note> {
         @Override
-        public int compare(Entity n1, Entity n2) {
+        public int compare(Note n1, Note n2) {
             return (n1.getName().compareTo(n2.getName()));
         }
     }
