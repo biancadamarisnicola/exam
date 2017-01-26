@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/entity_fragment"
+    style="?android:attr/textAppearanceLarge"
+    tools:context="com.example.nicolab.exam.DetailFragment">
+
+    <TextView
+        android:id="@+id/text_entity"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:layout_margin="@dimen/text_margin"
+        android:textColor="?attr/colorPrimaryDark"
+        android:textSize="25dp"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <!--<com.github.mikephil.charting.charts.PieChart-->
+        <!--android:id="@+id/pieChart1"-->
+        <!--android:layout_width="150dp"-->
+        <!--android:layout_height="150dp"-->
+        <!--android:layout_gravity="bottom|center"/>-->
+
+</LinearLayout>
